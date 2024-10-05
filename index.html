@@ -21,9 +21,10 @@
             width: 100%; /* Make video responsive */
             height: auto;
         }
-        button {
-            padding: 10px 20px;
-            display: none; /* Hide the button since no input is needed */
+        #loading {
+            display: none; /* Hidden by default */
+            font-size: 18px;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -31,19 +32,36 @@
 
 <h1>M3U8 Stream Player</h1>
 
+<div id="loading">Loading stream...</div>
 <div id="videoContainer">
     <video id="videoPlayer" controls>
         <source id="videoSource" src="" type="application/x-mpegURL">
         Your browser does not support HTML5 video.
     </video>
 </div>
+<div id="error" style="color: red; display: none;">Failed to load stream. Please check the URL.</div>
 
 <script>
     function playStream(link) {
         const videoSource = document.getElementById('videoSource');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const loadingIndicator = document.getElementById('loading');
+        const errorMessage = document.getElementById('error');
+
+        // Show loading indicator
+        loadingIndicator.style.display = 'block';
+        errorMessage.style.display = 'none';
+
         videoSource.src = link;
-        document.getElementById('videoPlayer').load();
-        document.getElementById('videoPlayer').play();
+        videoPlayer.load();
+
+        // Try to play the video
+        videoPlayer.play().then(() => {
+            loadingIndicator.style.display = 'none'; // Hide loading when video plays
+        }).catch(() => {
+            loadingIndicator.style.display = 'none'; // Hide loading
+            errorMessage.style.display = 'block'; // Show error message
+        });
     }
 
     // Get URL from query string and play the stream if available

@@ -3,25 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matherchod</title>
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-    </style>
+    <title>M3U8 Stream Player</title>
 </head>
 <body>
-    <h1>
-        কিরে খানকির পোলা <br>
-        তোরে আমি চুদছিলাম? <br>
-        আমার কোড চুরি করণ চোদাস কেন?
-    </h1>
+
+<h1>M3U8 Stream Player</h1>
+
+<input type="text" id="streamLink" placeholder="Enter M3U8 Link" />
+<button onclick="playStream()">Play</button>
+
+<video id="videoPlayer" width="600" controls>
+    <source id="videoSource" src="" type="application/x-mpegURL">
+    Your browser does not support HTML5 video.
+</video>
+
+<script>
+    function playStream() {
+        const link = document.getElementById('streamLink').value;
+        const videoSource = document.getElementById('videoSource');
+        videoSource.src = link;
+        document.getElementById('videoPlayer').load();
+        document.getElementById('videoPlayer').play();
+    }
+
+    // Optional: Automatically get URL from query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const streamUrl = urlParams.get('url');
+    if (streamUrl) {
+        document.getElementById('streamLink').value = streamUrl;
+        playStream();
+    }
+</script>
+
 </body>
 </html>

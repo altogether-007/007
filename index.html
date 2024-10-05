@@ -21,22 +21,15 @@
             width: 100%; /* Make video responsive */
             height: auto;
         }
-        input {
-            width: 80%; /* Responsive input width */
-            padding: 10px;
-            margin-bottom: 10px;
-        }
         button {
             padding: 10px 20px;
+            display: none; /* Hide the button since no input is needed */
         }
     </style>
 </head>
 <body>
 
 <h1>M3U8 Stream Player</h1>
-
-<input type="text" id="streamLink" placeholder="Enter M3U8 Link" />
-<button onclick="playStream()">Play</button>
 
 <div id="videoContainer">
     <video id="videoPlayer" controls>
@@ -46,20 +39,20 @@
 </div>
 
 <script>
-    function playStream() {
-        const link = document.getElementById('streamLink').value;
+    function playStream(link) {
         const videoSource = document.getElementById('videoSource');
         videoSource.src = link;
         document.getElementById('videoPlayer').load();
         document.getElementById('videoPlayer').play();
     }
 
-    // Optional: Automatically get URL from query string
+    // Get URL from query string and play the stream if available
     const urlParams = new URLSearchParams(window.location.search);
     const streamUrl = urlParams.get('url');
     if (streamUrl) {
-        document.getElementById('streamLink').value = streamUrl;
-        playStream();
+        playStream(streamUrl);
+    } else {
+        alert('No M3U8 link provided in the URL.');
     }
 </script>
 

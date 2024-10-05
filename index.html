@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAN vs IND Live Stream</title>
+    <style>
+        #videoPlayer {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            background: black;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.1.5/hls.min.js"></script>
+</head>
+<body>
+
+    <h1>BAN vs IND Live Stream</h1>
+    <video id="videoPlayer" controls></video>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        const videoSrc = "https://mprod-cdn.toffeelive.com/live/match-2/index.m3u8";
+
+        if (Hls.isSupported()) {
+            const hls = new Hls({
+                xhrSetup: function(xhr, url) {
+                    xhr.withCredentials = true; // Allow sending cookies
+                    xhr.setRequestHeader('Cookie', 'Edge-Cache-Cookie=URLPrefix=aHR0cHM6Ly9tcHJvZC1jZG4udG9mZmVlbGl2ZS5jb20v:Expires=1727893023:KeyName=prod_live_events:Signature=NsbOWldb8zen0OLQ2tYfcOAksMNDbhJJ7CuBffSdhPc7diggKdjHLdtKnwiOhJICyQpEoUWNF5QwYGg4h3-fBQ');
+                }
+            });
+
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                video.play();
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function () {
+                video.play();
+            });
+        } else {
+            console.error('HLS is not supported in this browser.');
+        }
+    </script>
+
+</body>
+</html>

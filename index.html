@@ -4,69 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M3U8 Stream Player</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
+        html {
+            font-family: Poppins;
+            background: #000;
+            margin: 0;
+            padding: 0;
         }
-        #videoContainer {
-            position: relative;
+        video {
             width: 100%;
             max-width: 600px; /* Max width for desktop */
             margin: auto;
-            overflow: hidden;
-        }
-        video {
-            width: 100%; /* Make video responsive */
-            height: auto;
-        }
-        #loading {
-            display: none; /* Hidden by default */
-            font-size: 18px;
-            margin: 20px 0;
+            display: block; /* Center the video */
         }
     </style>
 </head>
 <body>
 
-<div id="loading">Loading stream...</div>
-<div id="videoContainer">
-    <video id="videoPlayer" controls>
-        <source id="videoSource" src="" type="application/x-mpegURL">
-        Your browser does not support HTML5 video.
-    </video>
-</div>
+<video id="video" controls crossorigin playsinline>
+    <source src="https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Andpictureshd1/default/andpictureshd1.m3u8" type="application/vnd.apple.mpegurl">
+</video>
 
 <script>
-    function playStream(link) {
-        const videoSource = document.getElementById('videoSource');
-        const videoPlayer = document.getElementById('videoPlayer');
-        const loadingIndicator = document.getElementById('loading');
+    document.addEventListener("DOMContentLoaded", () => {
+        const video = document.getElementById('video');
 
-        // Show loading indicator
-        loadingIndicator.style.display = 'block';
+        // Check if HLS.js is supported
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(video.querySelector('source').src);
+            hls.attachMedia(video);
 
-        videoSource.src = link;
-        videoPlayer.load();
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                const plyr = new Plyr(video);
+            });
 
-        // Try to play the video
-        videoPlayer.play().then(() => {
-            loadingIndicator.style.display = 'none'; // Hide loading when video plays
-        }).catch(() => {
-            loadingIndicator.style.display = 'none'; // Hide loading on error
-            console.error('Failed to play the stream.');
-        });
-    }
-
-    // Get URL from query string and play the stream if available
-    const urlParams = new URLSearchParams(window.location.search);
-    const streamUrl = urlParams.get('url');
-    if (streamUrl) {
-        playStream(streamUrl);
-    } else {
-        alert('No M3U8 link provided in the URL.');
-    }
+            hls.on(Hls.Events.ERROR, () => {
+                console.error('Error loading the stream.');
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // This will play HLS natively in Safari
+            video.src = video.querySelector('source').src;
+            const plyr = new Plyr(video);
+        }
+    });
 </script>
 
 </body>

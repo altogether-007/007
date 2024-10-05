@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M3U8 Stream Player</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clapper-player/dist/clapper-player.min.css"> <!-- Clapper Player CSS -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,11 +22,11 @@
             margin: auto;
         }
     </style>
-    <script src="https://cdn.jwplayer.com/libraries/your-jwplayer-library.js"></script> <!-- Replace with your JW Player library link -->
+    <script src="https://cdn.jsdelivr.net/npm/clapper-player/dist/clapper-player.min.js"></script> <!-- Clapper Player JS -->
 </head>
 <body>
 
-<div id="loading">Loading stream...</div>
+
 <div id="videoContainer"></div>
 
 <script>
@@ -33,21 +34,17 @@
         const loadingIndicator = document.getElementById('loading');
         loadingIndicator.style.display = 'block';
 
-        jwplayer("videoContainer").setup({
-            file: link,
-            width: "100%",
-            height: "auto",
-            autostart: true,
-            primary: "html5"
+        const player = new ClapperPlayer("#videoContainer", {
+            source: link,
+            autoplay: true,
+            controls: true,
         });
 
-        // Hide loading indicator when the player is ready
-        jwplayer("videoContainer").on('ready', function() {
-            loadingIndicator.style.display = 'none';
+        player.on('ready', function() {
+            loadingIndicator.style.display = 'none'; // Hide loading when player is ready
         });
 
-        // Handle errors
-        jwplayer("videoContainer").on('error', function() {
+        player.on('error', function() {
             loadingIndicator.style.display = 'none'; // Hide loading on error
             console.error('Failed to play the stream.');
         });

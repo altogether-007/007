@@ -7,77 +7,88 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <style>
-        html {
-            font-family: Poppins;
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
             background: #000;
-            margin: 0;
-            padding: 0;
             color: #fff;
         }
-        video {
+        #videoContainer {
+            position: relative;
             width: 100%;
             max-width: 600px; /* Max width for desktop */
-            margin: 20px auto; /* Center the video */
-            display: block;
+            margin: auto;
         }
-        input {
-            width: 300px;
-            padding: 10px;
-            margin: 20px auto;
-            display: block;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        video {
+            width: 100%; /* Make video responsive */
+            height: auto;
         }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
+        #loading {
+            display: none; /* Hidden by default */
+            font-size: 18px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
 
-<input type="text" id="streamUrl" placeholder="Enter M3U8 URL" />
-<button id="playButton">Play Stream</button>
-<video id="video" controls crossorigin playsinline>
-    <source id="videoSource" type="application/vnd.apple.mpegurl">
-</video>
+<div id="loading">Loading stream...</div>
+<div id="videoContainer">
+    <video id="videoPlayer" controls crossorigin playsinline>
+        <source id="videoSource" src="" type="application/x-mpegURL">
+        Your browser does not support HTML5 video.
+    </video>
+</div>
 
 <script>
-    document.getElementById('playButton').addEventListener('click', () => {
-        const video = document.getElementById('video');
-        const url = document.getElementById('streamUrl').value;
-        const source = document.getElementById('videoSource');
+    document.addEventListener("DOMContentLoaded", () => {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const loadingIndicator = document.getElementById('loading');
 
-        if (url) {
-            // Check if HLS.js is supported
+        // Function to play the stream
+        function playStream(link) {
+            loadingIndicator.style.display = 'block'; // Show loading indicator
+
             if (Hls.isSupported()) {
                 const hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
+                hls.loadSource(link);
+                hls.attachMedia(videoPlayer);
+                
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    const plyr = new Plyr(video);
-                    plyr.play();
+                    const plyr = new Plyr(videoPlayer);
+                    videoPlayer.play().then(() => {
+                        loadingIndicator.style.display = 'none'; // Hide loading when video plays
+                    }).catch(() => {
+                        loadingIndicator.style.display = 'none'; // Hide loading on error
+                        console.error('Failed to play the stream.');
+                    });
                 });
+
                 hls.on(Hls.Events.ERROR, () => {
+                    loadingIndicator.style.display = 'none'; // Hide loading on error
                     console.error('Error loading the stream.');
                 });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // This will play HLS natively in Safari
-                video.src = url;
-                const plyr = new Plyr(video);
-                plyr.play();
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                videoPlayer.src = link;
+                const plyr = new Plyr(videoPlayer);
+                videoPlayer.play().then(() => {
+                    loadingIndicator.style.display = 'none'; // Hide loading when video plays
+                }).catch(() => {
+                    loadingIndicator.style.display = 'none'; // Hide loading on error
+                    console.error('Failed to play the stream.');
+                });
             }
+        }
+
+        // Get URL from query string and play the stream if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const streamUrl = urlParams.get('url');
+        if (streamUrl) {
+            playStream(streamUrl);
         } else {
-            alert('Please enter a valid M3U8 URL.');
+            alert('No M3U8 link provided in the URL.');
         }
     });
 </script>

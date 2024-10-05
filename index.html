@@ -10,57 +10,44 @@
             text-align: center;
             margin: 20px;
         }
-        #videoContainer {
-            position: relative;
-            width: 100%;
-            max-width: 600px; /* Max width for desktop */
-            margin: auto;
-            overflow: hidden;
-        }
-        video {
-            width: 100%; /* Make video responsive */
-            height: auto;
-        }
         #loading {
             display: none; /* Hidden by default */
             font-size: 18px;
             margin: 20px 0;
         }
     </style>
+    <script src="https://cdn.jwplayer.com/libraries/your-jwplayer-library.js"></script> <!-- Replace with your JW Player library link -->
 </head>
 <body>
 
-<h1>M3U8 Stream Player</h1>
-
 <div id="loading">Loading stream...</div>
-<div id="videoContainer">
-    <video id="videoPlayer" controls>
-        <source id="videoSource" src="" type="application/x-mpegURL">
-        Your browser does not support HTML5 video.
-    </video>
-</div>
-<div id="error" style="color: red; display: none;">Failed to load stream. Please check the URL.</div>
+<div id="videoContainer"></div>
 
 <script>
     function playStream(link) {
-        const videoSource = document.getElementById('videoSource');
-        const videoPlayer = document.getElementById('videoPlayer');
         const loadingIndicator = document.getElementById('loading');
-        const errorMessage = document.getElementById('error');
-
+        
         // Show loading indicator
         loadingIndicator.style.display = 'block';
-        errorMessage.style.display = 'none';
 
-        videoSource.src = link;
-        videoPlayer.load();
+        // Setup JW Player
+        jwplayer("videoContainer").setup({
+            file: link,
+            width: "100%",
+            height: "auto",
+            autostart: true,
+            primary: "html5"
+        });
 
-        // Try to play the video
-        videoPlayer.play().then(() => {
-            loadingIndicator.style.display = 'none'; // Hide loading when video plays
-        }).catch(() => {
-            loadingIndicator.style.display = 'none'; // Hide loading
-            errorMessage.style.display = 'block'; // Show error message
+        // Hide loading indicator when the player is ready
+        jwplayer("videoContainer").on('ready', function() {
+            loadingIndicator.style.display = 'none';
+        });
+
+        // Handle errors
+        jwplayer("videoContainer").on('error', function() {
+            loadingIndicator.style.display = 'none'; // Hide loading on error
+            console.error('Failed to play the stream.');
         });
     }
 

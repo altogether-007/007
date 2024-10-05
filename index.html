@@ -15,6 +15,11 @@
             font-size: 18px;
             margin: 20px 0;
         }
+        #videoContainer {
+            width: 100%;
+            max-width: 600px; /* Max width for desktop */
+            margin: auto;
+        }
     </style>
     <script src="https://cdn.jwplayer.com/libraries/your-jwplayer-library.js"></script> <!-- Replace with your JW Player library link -->
 </head>
@@ -26,11 +31,8 @@
 <script>
     function playStream(link) {
         const loadingIndicator = document.getElementById('loading');
-        
-        // Show loading indicator
         loadingIndicator.style.display = 'block';
 
-        // Setup JW Player
         jwplayer("videoContainer").setup({
             file: link,
             width: "100%",

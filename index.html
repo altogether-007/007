@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M3U8 Stream Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #videoContainer {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for desktop */
+            margin: auto;
+            overflow: hidden;
+        }
+        video {
+            width: 100%; /* Make video responsive */
+            height: auto;
+        }
+        input {
+            width: 80%; /* Responsive input width */
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -12,10 +38,12 @@
 <input type="text" id="streamLink" placeholder="Enter M3U8 Link" />
 <button onclick="playStream()">Play</button>
 
-<video id="videoPlayer" width="600" controls>
-    <source id="videoSource" src="" type="application/x-mpegURL">
-    Your browser does not support HTML5 video.
-</video>
+<div id="videoContainer">
+    <video id="videoPlayer" controls>
+        <source id="videoSource" src="" type="application/x-mpegURL">
+        Your browser does not support HTML5 video.
+    </video>
+</div>
 
 <script>
     function playStream() {

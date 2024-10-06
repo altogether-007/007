@@ -1,1 +1,110 @@
-putki mara kha
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লিংক শর্টার</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        #shortUrlContainer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        #shortUrl {
+            font-size: 18px;
+            color: #5cb85c;
+        }
+        .copyButton {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .copyButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>লিংক শর্টার</h1>
+        <form id="linkForm">
+            <label for="longUrl">দীর্ঘ URL দিন:</label>
+            <input type="url" id="longUrl" required placeholder="যেমন: https://example.com">
+            <button type="submit">শর্ট করুন</button>
+        </form>
+        <div id="shortUrlContainer">
+            <p id="shortUrl"></p>
+            <button class="copyButton" onclick="copyToClipboard()">কপি করুন</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('linkForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const longUrl = document.getElementById('longUrl').value;
+            const shortUrl = "short.ly/" + btoa(longUrl); // একটি সহজ শর্ট URL তৈরির পদ্ধতি
+            document.getElementById('shortUrl').innerText = shortUrl;
+            document.getElementById('shortUrlContainer').style.display = 'block'; // বক্সটি দেখান
+        });
+
+        function copyToClipboard() {
+            const shortUrlText = document.getElementById('shortUrl').innerText;
+            navigator.clipboard.writeText(shortUrlText).then(() => {
+                alert('শর্ট URL কপি হয়েছে!');
+            }).catch(err => {
+                console.error('কপি করতে পারলাম না: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
